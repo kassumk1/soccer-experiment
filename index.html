@@ -1,14 +1,51 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Soccer Kicking Experiment</title>
+    <title>Auditory-Visual Localization Experiment</title>
     
     <script src="https://unpkg.com/jspsych@7.3.3"></script>
-    
     <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@1.1.2"></script>
     <script src="https://unpkg.com/@jspsych/plugin-image-button-response@1.1.2"></script>
     
     <link href="https://unpkg.com/jspsych@7.3.3/css/jspsych.css" rel="stylesheet" type="text/css" />
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f4; 
+        }
+        .jspsych-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: 50px auto;
+        }
+        .jspsych-btn {
+            font-size: 16px !important; 
+            padding: 10px 18px !important;
+            margin: 0 5px !important; 
+            background-color: #007bff; 
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        #stimulus-area {
+            border: 2px solid #333; 
+            background-color: #000;
+            color: #fff;
+            height: 450px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+            line-height: 1.5;
+        }
+    </style>
 </head>
 <body>
     <div id="jspsych-display"></div>
@@ -17,41 +54,57 @@
         // Initialize JsPsych
         var jsPsych = initJsPsych({
             display_element: 'jspsych-display',
+            
+            // 🚨 FIX: This is the updated function to display a clean finish message 
             on_finish: function() {
-                // In a real experiment, data would be saved here.
-                // For now, we display the data to confirm it's working.
-                jsPsych.data.displayData(); 
+                // Clear the main display area
+                document.getElementById('jspsych-display').innerHTML = 
+                    '<div class="jspsych-content" style="text-align: center;">' +
+                    '<h1>✅ Experiment Complete</h1>' +
+                    '<h2>Thank you for participating in the localization study!</h2>' +
+                    '<p>The structural demo has concluded. You may now close this window.</p>' +
+                    '</div>';
+                
+                // Optional: For debugging, you can still log the data to the console
+                // console.log(jsPsych.data.get().json());
             }
         });
 
         // --- 1. Welcome and Instructions Trial ---
         var welcome = {
             type: jsPsychHtmlKeyboardResponse,
-            stimulus: '<h1>Soccer Kicking Perception Experiment</h1><p>This is a mock-up of the trial structure. Press **SPACE** to continue.</p>',
-            choices: [' '], // Only accept the spacebar
-            post_trial_gap: 500 // 0.5 second pause
+            stimulus: '<h1>Auditory-Visual Localization Experiment</h1>' + 
+                      '<p>Thank you for participating. This is a practice trial to familiarize you with the procedure.</p>' +
+                      '<p>Press the **SPACEBAR** to begin.</p>',
+            choices: [' '], 
+            post_trial_gap: 500 
         };
 
-        // --- 2. The Animation/Stimulus Phase (MOCK) ---
-        // This simulates the animation playing and the cut-off point.
+        // --- 2. The Animation/Stimulus Phase (ROBUST HTML PLACEHOLDER) ---
         var animation_phase = {
             type: jsPsychHtmlKeyboardResponse,
-            stimulus: '<div style="font-size: 24px;">⚽ Animation Playing... (imagine a player kicking the ball) ⚽</div><p>The ball is now in the air. Press **ENTER** to stop the animation (the "cut").</p>',
-            choices: ['Enter'],
-            trial_duration: 3000, // Show for max 3 seconds (or until Enter is pressed)
+            stimulus: '<div id="stimulus-area">' +
+                      '<h2>⚽ STIMULUS DISPLAY AREA ⚽</h2>' +
+                      '<p>Imagine the video of the player kicking the ball is playing here.</p>' +
+                      '<p>The visual and auditory information has been delivered.</p>' +
+                      '</div>' +
+                      '<p>Press **ENTER** to immediately advance to the response screen (The "Cut-Off" Point).</p>',
+            
+            choices: ['Enter'], 
+            trial_duration: 3000, 
+            response_ends_trial: true, 
+            data: { task: 'stimulus_placeholder' }
         };
 
-        // --- 3. The Response Phase (MOCK of the Array) ---
-        // Uses image-button-response to simulate a field and an array of choices.
+        // --- 3. The Response Phase (5-Option Array) ---
         var response_phase = {
             type: jsPsychImageButtonResponse,
-            // A publicly available image of a soccer field is used as a placeholder
             stimulus: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Soccer_field_-_empty.png/640px-Soccer_field_-_empty.png', 
-            stimulus_height: 400,
-            prompt: '<p>Based on the visual/audio cues, how far did the ball land?</p>',
-            choices: ['Close (5m)', 'Medium (15m)', 'Far (30m)'],
-            // Custom styling to make the buttons look neat below the image
-            button_html: '<button class="jspsych-btn" style="margin: 0 10px;">%choice%</button>', 
+            stimulus_height: 350, 
+            prompt: '<h3 style="margin-top: 20px;">Indicate the estimated landing position of the ball.</h3>',
+            choices: ['Very Close (5m)', 'Close (10m)', 'Medium (15m)', 'Far (20m)', 'Very Far (25m)'],
+            button_html: '<button class="jspsych-btn">%choice%</button>', 
+            data: { task: 'response_array' }
         };
 
         // --- 4. Trial Timeline ---
