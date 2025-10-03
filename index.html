@@ -1,17 +1,34 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>Soccer Ball Experiment</title>
-
-  <!-- jsPsych core -->
-  <script src="https://unpkg.com/jspsych@7.3.3/dist/jspsych.js"></script>
-  <link rel="stylesheet" href="https://unpkg.com/jspsych@7.3.3/css/jspsych.css">
-
-  <!-- plugin needed for keyboard responses -->
-  <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response"></script>
+    <title>Soccer Kicking Experiment</title>
+    <script src="https://unpkg.com/jspsych@7.3.3"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@1.1.2"></script>
+    <link href="https://unpkg.com/jspsych@7.3.3/css/jspsych.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-  <script src="experiment.js"></script>
+    <div id="jspsych-display"></div>
+    <script>
+        // Initialize JsPsych
+        var jsPsych = initJsPsych({
+            display_element: 'jspsych-display',
+            on_finish: function() {
+                jsPsych.data.displayData();
+            }
+        });
+
+        // Define a simple trial to show that the experiment is running
+        var welcome = {
+            type: jsPsychHtmlKeyboardResponse,
+            stimulus: '<h1>Welcome to the Soccer Kicking Perception Experiment</h1><p>Press any key to begin a mock trial.</p>',
+        };
+
+        // Define the simple trial timeline
+        var timeline = [];
+        timeline.push(welcome);
+
+        // Run the experiment
+        jsPsych.run(timeline);
+    </script>
 </body>
 </html>
