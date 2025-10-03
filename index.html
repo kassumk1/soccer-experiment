@@ -2,32 +2,65 @@
 <html>
 <head>
     <title>Soccer Kicking Experiment</title>
+    
     <script src="https://unpkg.com/jspsych@7.3.3"></script>
+    
     <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@1.1.2"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-image-button-response@1.1.2"></script>
+    
     <link href="https://unpkg.com/jspsych@7.3.3/css/jspsych.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
     <div id="jspsych-display"></div>
+    
     <script>
         // Initialize JsPsych
         var jsPsych = initJsPsych({
             display_element: 'jspsych-display',
             on_finish: function() {
-                jsPsych.data.displayData();
+                // In a real experiment, data would be saved here.
+                // For now, we display the data to confirm it's working.
+                jsPsych.data.displayData(); 
             }
         });
 
-        // Define a simple trial to show that the experiment is running
+        // --- 1. Welcome and Instructions Trial ---
         var welcome = {
             type: jsPsychHtmlKeyboardResponse,
-            stimulus: '<h1>Welcome to the Soccer Kicking Perception Experiment</h1><p>Press any key to begin a mock trial.</p>',
+            stimulus: '<h1>Soccer Kicking Perception Experiment</h1><p>This is a mock-up of the trial structure. Press **SPACE** to continue.</p>',
+            choices: [' '], // Only accept the spacebar
+            post_trial_gap: 500 // 0.5 second pause
         };
 
-        // Define the simple trial timeline
+        // --- 2. The Animation/Stimulus Phase (MOCK) ---
+        // This simulates the animation playing and the cut-off point.
+        var animation_phase = {
+            type: jsPsychHtmlKeyboardResponse,
+            stimulus: '<div style="font-size: 24px;">⚽ Animation Playing... (imagine a player kicking the ball) ⚽</div><p>The ball is now in the air. Press **ENTER** to stop the animation (the "cut").</p>',
+            choices: ['Enter'],
+            trial_duration: 3000, // Show for max 3 seconds (or until Enter is pressed)
+        };
+
+        // --- 3. The Response Phase (MOCK of the Array) ---
+        // Uses image-button-response to simulate a field and an array of choices.
+        var response_phase = {
+            type: jsPsychImageButtonResponse,
+            // A publicly available image of a soccer field is used as a placeholder
+            stimulus: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Soccer_field_-_empty.png/640px-Soccer_field_-_empty.png', 
+            stimulus_height: 400,
+            prompt: '<p>Based on the visual/audio cues, how far did the ball land?</p>',
+            choices: ['Close (5m)', 'Medium (15m)', 'Far (30m)'],
+            // Custom styling to make the buttons look neat below the image
+            button_html: '<button class="jspsych-btn" style="margin: 0 10px;">%choice%</button>', 
+        };
+
+        // --- 4. Trial Timeline ---
         var timeline = [];
         timeline.push(welcome);
+        timeline.push(animation_phase);
+        timeline.push(response_phase);
 
-        // Run the experiment
+        // --- 5. Run Experiment ---
         jsPsych.run(timeline);
     </script>
 </body>
